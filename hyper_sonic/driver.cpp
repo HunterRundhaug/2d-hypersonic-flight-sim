@@ -2,6 +2,8 @@
 #include "Simulation.h"
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <imgui.h>
+#include <imgui-SFML.h>
 
 sf::Vector2f worldToScreen(const Vec2& worldPos, float pixelsPerMeter, float originX, float originY) {
     float screenX = originX + static_cast<float>(worldPos.x) * pixelsPerMeter;
@@ -49,8 +51,17 @@ int main()
     float s_angle = getRotationDegree(vehicle.getDirection());
     vehicle_sprite.setRotation(sf::degrees(s_angle));
 
+
     // WINDOW
     sf::RenderWindow window(sf::VideoMode({ WIDTH, HEIGHT }), "SFML works!");
+
+    // ImGUI
+    if (!ImGui::SFML::Init(window)) {
+        std::cerr << "Failed to initialize ImGui-SFML\n";
+        return 1;
+    }
+
+    sf::Clock deltaClock;
 
     // TEXT 
     sf::Font font;
@@ -125,6 +136,7 @@ int main()
         accumulator += frameTime * simSpeed;
 
         while (const std::optional event = window.pollEvent()) {
+            ImGui::SFML::ProcessEvent(window, *event);
 
             if (event->is<sf::Event::Closed>()) {
                 window.close();
@@ -152,6 +164,11 @@ int main()
         // update trail vector
         trail.push_back(sf::Vertex { sprite_pos, sf::Color::Cyan });
 
+        ImGui::SFML::Update(window, deltaClock.restart());
+        ImGui::Begin("Test");
+        ImGui::Text("ImGui is working");
+        ImGui::End();
+
         window.clear();
         window.draw(vehicle_sprite);
         window.draw(speed_value_text);
@@ -163,10 +180,14 @@ int main()
         if (trail.size() >= 2) {
             window.draw(&trail[0], trail.size(), sf::PrimitiveType::LineStrip);
         }
+
+        ImGui::SFML::Render(window);
         window.display();
 
 
     }
+
+    ImGui::SFML::Shutdown();// shutdown ImGUI
 
     /*
     Simulation* simulation = new Simulation();
