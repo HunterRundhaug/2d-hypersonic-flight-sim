@@ -15,7 +15,10 @@ public:
 	double getLength() const;
 	Vec2 normalize() const;
 	double crossProduct(const Vec2& other) const;
-	
+
+	// constructors
+	Vec2();
+	Vec2(double xVal, double yVal);
 };
 
 // Print overload

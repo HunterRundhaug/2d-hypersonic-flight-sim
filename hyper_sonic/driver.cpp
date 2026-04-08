@@ -4,6 +4,7 @@
 #include <cmath>
 #include <imgui.h>
 #include <imgui-SFML.h>
+#include "Vec2.h"
 
 sf::Vector2f worldToScreen(const Vec2& worldPos, float pixelsPerMeter, float originX, float originY) {
     float screenX = originX + static_cast<float>(worldPos.x) * pixelsPerMeter;
@@ -128,7 +129,12 @@ int main()
     sf::Clock clock;
     double accumulator = 0.0;
     double physicsDt = simulation->getDeltaTime(); // Need to be same as dt in simulation
-    double simSpeed = 1.0;
+    double simSpeed = 0.0;
+    float simSpeedInput = 1.0f;
+
+    // ImGUI variables
+    bool paused = true;
+    float directionAngleDeg = 0.0f; 
 
     // Animation Loop
     while (window.isOpen()) {
@@ -164,9 +170,58 @@ int main()
         // update trail vector
         trail.push_back(sf::Vertex { sprite_pos, sf::Color::Cyan });
 
+        // ImGUI - - - - - - - - - - 
         ImGui::SFML::Update(window, deltaClock.restart());
-        ImGui::Begin("Test");
-        ImGui::Text("ImGui is working");
+        ImGui::SetNextWindowSize(ImVec2(500, 200));
+
+        // main control panel
+        ImGui::Begin("Control");
+
+        ImGui::InputFloat("Sim Speed", &simSpeedInput);
+
+        if (ImGui::Button( paused ? "Start" : "Pause")) {
+            
+            paused ? simSpeed = simSpeedInput : simSpeed = 0.0;
+            paused = !paused;
+        }
+
+        if (ImGui::Button("reset_vehicle")) {
+            vehicle.resetVehicle();
+            accumulator = 0.0;
+            clock.restart();
+        }
+
+        if (ImGui::Button("clear trail")) {
+            trail.clear();
+        }
+
+        ImGui::InputFloat("Simulation Scale", &pixels_pre_meter);
+
+        ImGui::End();
+
+        // vehicle state controls
+        ImGui::SetNextWindowSize(ImVec2(500, 200));
+        ImGui::Begin("Vehicle");
+
+        if (ImGui::SliderFloat("Initial Angle", &directionAngleDeg, -180.0f, 180.0f)) {
+            float angleRad = directionAngleDeg * 3.14159265f / 180.0f;
+            Vec2 newDir(std::sin(angleRad), std::cos(angleRad));
+            vehicle.setDirection(newDir);
+        }
+
+        float v_mass = vehicle.getMass();
+        if (ImGui::InputFloat("Vehicle Mass", &v_mass)) {
+            vehicle.setVehicleMass(v_mass);
+        }
+        float v_moment = vehicle.getMomentOfInertia();
+        if (ImGui::InputFloat("Vehicle Moment Of Inertia", &v_moment)) {
+            vehicle.setVehicleMomentOfInertia(v_moment);
+        }
+        float v_thrust = vehicle.getThrust();
+        if (ImGui::InputFloat("Vehicle Thrust", &v_thrust)) {
+            vehicle.setVehicleThrust(v_thrust);
+        }
+
         ImGui::End();
 
         window.clear();

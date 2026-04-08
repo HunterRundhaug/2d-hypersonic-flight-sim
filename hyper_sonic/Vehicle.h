@@ -8,6 +8,12 @@ private:
 	Vec2 velocity;
 	Vec2 direction;
 
+	// origin variables for resetting
+	Vec2 origin_position;
+	Vec2 origin_velocity;
+	Vec2 origin_direction;
+	double origin_angular_velocity;
+
 	double mass; 
 	double thrust; 
 
@@ -37,8 +43,15 @@ public:
 
 	double getSpeed() const;
 
+	// setters
 	void setNewPosition(Vec2 new_position);
 	void setNewVelocity(Vec2 new_velocity);
 	void setAngularVelocity(double new_ang_velo);
 	void setDirection(Vec2 new_dir);
+
+	void setVehicleMass(double newMass);
+	void setVehicleMomentOfInertia(double moment);
+	void setVehicleThrust(double new_thrust);
+
+	void resetVehicle();
 };

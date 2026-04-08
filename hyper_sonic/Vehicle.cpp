@@ -1,9 +1,10 @@
 #include "Vehicle.h"
+#include <cmath>
 
 Vehicle::Vehicle()
 	: position{ 0.0, 0.0 },
 	velocity{ 0.0, 0.0 },
-	direction{ 0.05, 0.9 }, 
+	direction{ 0.0, 1.0 },
 	mass(1000.0),
 	angular_velocity{0},
 	moment_of_inertia{5},
@@ -12,6 +13,11 @@ Vehicle::Vehicle()
 	drag_coefficient(0.4),
 	pressure_limit(0.0),
 	reference_area(0.5){
+
+	origin_position = position;
+	origin_direction = direction;
+	origin_velocity = velocity;
+	origin_angular_velocity = angular_velocity;
 }
 
 // Getters 
@@ -66,4 +72,24 @@ void Vehicle::setAngularVelocity(double new_ang_velo) {
 
 void Vehicle::setDirection(Vec2 new_dir) {
 	direction = new_dir;
+}
+
+void Vehicle::setVehicleMass(double newMass) {
+	mass = newMass;
+}
+
+void Vehicle::setVehicleMomentOfInertia(double moment) {
+	moment_of_inertia = moment;
+}
+
+void Vehicle::setVehicleThrust(double new_thrust) {
+	thrust = new_thrust;
+}
+
+
+void Vehicle::resetVehicle() {
+	position = origin_position;
+	velocity = origin_velocity;
+	direction = origin_direction;
+	angular_velocity = origin_angular_velocity;
 }

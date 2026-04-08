@@ -2,6 +2,10 @@
 #include <cmath>
 
 
+// Constructor
+Vec2::Vec2() : x(0.0), y(0.0) {}
+Vec2::Vec2(double xVal, double yVal) : x(xVal), y(yVal){}
+
 // Math operations: 
 
 Vec2 Vec2::operator*(double scalar) const {
