@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="hyper_sonic/hyper_sonic.vcxproj" Id="fbaf9305-e469-4a20-ba37-dc6d06a2335c" />
+</Solution>

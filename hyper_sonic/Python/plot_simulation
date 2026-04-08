@@ -1,0 +1,95 @@
+import csv
+import matplotlib.pyplot as plt
+import os
+
+times = []
+xs = []
+ys = []
+speeds = []
+dir_xs = []
+dir_ys = []
+angular_velocities = []
+
+file_name = "output.csv"#input("Enter CSV file name: ").strip()
+file_path = os.path.join("..", file_name)
+
+with open(file_path, "r", newline="") as file:
+    reader = csv.DictReader(file, skipinitialspace=True)
+
+    for row in reader:
+        times.append(float(row["time"]))
+        xs.append(float(row["x"]))
+        ys.append(float(row["y"]))
+        speeds.append(float(row["speed"]))
+        dir_xs.append(float(row["dir_x"]))
+        dir_ys.append(float(row["dir_y"]))
+        angular_velocities.append(float(row["angular_velocity"]))
+
+plt.figure()
+plt.plot(times, ys)
+plt.xlabel("Time")
+plt.ylabel("Y Position")
+plt.title("Altitude vs Time")
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(times, speeds)
+plt.xlabel("Time")
+plt.ylabel("Speed")
+plt.title("Speed vs Time")
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(xs, ys)
+plt.xlabel("X Position")
+plt.ylabel("Y Position")
+plt.title("Trajectory")
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(times, dir_xs)
+plt.xlabel("Time")
+plt.ylabel("Direction X")
+plt.title("Direction X vs Time")
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(times, dir_ys)
+plt.xlabel("Time")
+plt.ylabel("Direction Y")
+plt.title("Direction Y vs Time")
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(times, angular_velocities)
+plt.xlabel("Time")
+plt.ylabel("Angular Velocity")
+plt.title("Angular Velocity vs Time")
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(xs, ys)
+
+step = max(1, len(xs) // 25)
+plt.quiver(
+    xs[::step],
+    ys[::step],
+    dir_xs[::step],
+    dir_ys[::step],
+    angles='xy',
+    scale_units='xy',
+    scale=.001
+)
+
+plt.xlabel("X Position")
+plt.ylabel("Y Position")
+plt.title("Trajectory with Direction Arrows")
+plt.axis('equal')
+plt.grid(True)
+plt.show()

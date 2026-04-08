@@ -1,0 +1,84 @@
+
+
+
+
+Core Goal 1
+
+Implement a deterministic 2D flight simulation in C++ that updates a 
+vehicle’s state over a fixed number of timesteps using configurable 
+vehicle and environment parameters, then exports the full simulation 
+history to a CSV file for analysis.
+
+
+What we need:
+	
+	- create a vehicle class:
+		- position & direction & velocity
+		- weight
+		- thrust 
+		- fuel
+		- aero dynamic profile (drag amount)
+		- pressure limitations for failures
+
+
+	- create a world class: (world describes the enviornment the vehicle is simulated within)
+		// flat world design
+		- gravity 
+		- base air density value
+		- function for air density based on height
+		- base ambient tempurate 
+		- function for tempurature based on height
+
+	- The Simluation:
+		- dt time between simulation steps
+		- runs until some end condition is met (time step limit to start)
+		- given current values calculate the next world state
+		- write world state to csv
+
+	- Helpers:
+	- Vec2 class:
+		- x 
+		- y 
+		- math function for manipulation:
+			- Vec2 * double
+			- dot product 
+
+	- SFML for graphics 
+
+
+
+
+
+Basic physics calculation ever update step:
+
+	Thrust force = Thrust * direction // TODO make sure direction is normalized
+	Gravity force = (0, -mass * gravity)
+
+	drag force = 1/2 * mass * speed^2 * drag_coefficient * A(i.e reference area)
+
+	Total force = (Thrust force) + Gravity force + drag force
+
+	acceleration = (Total force) / mass
+	new Velocity = old velocity + (acceleration * deltaTime)
+
+	finally update position:
+	new position = old pos + new Velocity * deltaTime
+
+	[completed additional physics to add torque based on the mismatch
+	between the vehicle direction and the velocity of it]
+
+
+
+	Completed :
+	- modularize simulation code so we can add different simulation models to test
+		against eachother. [DONE - seperated rotational physics from
+		translation each into their own member functions of the
+		Simulation class.] 
+
+
+	- Implemented basic graphics including vehicle sprite with 
+		transformations and rotations converted from simulation 
+		space to screen space.
+
+	- Implemented a way to speed up time to watch the simulation
+		quicker while still simulating every timestep.
