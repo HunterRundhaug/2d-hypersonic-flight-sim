@@ -155,6 +155,7 @@
     <ClCompile Include="imgui_tables.cpp" />
     <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="Simulation.cpp" />
+    <ClCompile Include="SimulationApp.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="World.cpp" />
@@ -165,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="CSVWriter.h" />
     <ClInclude Include="Simulation.h" />
+    <ClInclude Include="SimulationApp.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="World.h" />
