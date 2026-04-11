@@ -101,10 +101,64 @@ void Simulation::run(int iterations, int write_csv_flag) {
 	}
 }
 
+double Simulation::getDeltaTime()const {
+	return dt;
+}
+
 Vehicle& Simulation::getVehicle() {
 	return vehicle;
 }
 
-double Simulation::getDeltaTime()const {
-	return dt;
+void Simulation::setVehicleAltitude(double alt) {
+	double x = vehicle.getPosition().x;
+	vehicle.setNewPosition({ x, alt });
 }
+
+Vec2 Simulation::getVehiclePosition() {
+	return vehicle.getPosition();
+}
+
+Vec2 Simulation::getVehicleDirection() {
+	return vehicle.getDirection();
+}
+
+double Simulation::getVehicleSpeed() {
+	return vehicle.getSpeed();
+}
+
+double Simulation::getVehicleMass() {
+	return vehicle.getMass();
+}
+
+double Simulation::getVehicleMomentOfInertia() {
+	return vehicle.getMomentOfInertia();
+}
+
+double Simulation::getVehicleThrust() {
+	return vehicle.getThrust();
+}
+
+double Simulation::getVehicleAngularVelocity() {
+	return vehicle.getAngularVelocity();
+}
+
+void Simulation::resetVehicle() {
+	vehicle.resetVehicle();
+}
+
+void Simulation::setVehicleDirection(Vec2 newDir) {
+	vehicle.setDirection(newDir);
+}
+
+void Simulation::setVehicleMass(float new_mass) {
+	vehicle.setVehicleMass(new_mass);
+}
+
+void Simulation::setVehicleMomentOfInertia(float v_moment) {
+	vehicle.setVehicleMomentOfInertia(v_moment);
+}
+
+void Simulation::setVehicleThrust(float v_thrust) {
+	vehicle.setVehicleThrust(v_thrust);
+}
+
