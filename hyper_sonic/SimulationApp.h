@@ -5,12 +5,16 @@
 #include <vector>
 #include "Simulation.h"
 #include "Vec2.h"
+#include "CSVWriter.h"
 
 class SimulationApp {
 
 public:
 	SimulationApp();
 	void run();
+	void startSimulation();
+	void updateSimulation();
+	void stopSimulation();
 
 private:
 
@@ -60,6 +64,16 @@ private:
 	sf::Text veh_y_text_static;
 	sf::Text veh_ang_velo_text_static;
 	sf::Text veh_ang_velo_text;
+	sf::Text air_psr_at;
+	sf::Text air_pst_static;
+	sf::Text veh_temp;
+	sf::Text veh_temp_static;
+
+	// CSV writer vars
+	std::string csv_file_name = "output.csv";
+	bool record_csv = false;
+	bool simulation_running = false;
+	std::unique_ptr<CSVWriter> csv_writer;
 
 	void initText( sf::Text& text, std::string text_value, unsigned int size,
 		sf::Color color, sf::Text::Style style, sf::Vector2f position);

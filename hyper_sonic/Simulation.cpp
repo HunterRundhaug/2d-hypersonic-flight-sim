@@ -16,7 +16,8 @@ void Simulation::update() {
 	double speed = vehicle.getSpeed();
 	updateRotation(speed);
 	updateTranslation(speed);
-
+	updateTemperature();
+	elapsed_time += dt;
 }
 
 void Simulation::updateRotation(double speed) {
@@ -63,6 +64,30 @@ void Simulation::updateTranslation(double speed) {
 	// set vehicle's new values
 	vehicle.setNewPosition(new_position);
 	vehicle.setNewVelocity(new_velocity);
+}
+
+void Simulation::updateTemperature() {
+	double height = vehicle.getPosition().y;
+	double ambient_temp = world.getTemperatureAtHeight(height);
+
+	double speed = vehicle.getSpeed();
+	double rho = world.getAirDensityAtHeight(height);
+
+	// Simple drag heating estimate
+	double heating = 0.0;
+	if (speed > 1e-6) {
+		heating = 0.00005 * rho * speed * speed * speed;
+	}
+
+	// Target temperature = ambient + aerodynamic heating
+	double target_temp = ambient_temp + heating;
+
+	// Smoothly move vehicle temp toward target temp
+	double response_rate = 0.5;
+	double new_temp = vehicle.getTemperature()
+		+ (target_temp - vehicle.getTemperature()) * response_rate * dt;
+
+	vehicle.setTemperature(new_temp);
 }
 
 void Simulation::run(int iterations, int write_csv_flag) {
@@ -142,8 +167,25 @@ double Simulation::getVehicleAngularVelocity() {
 	return vehicle.getAngularVelocity();
 }
 
+double Simulation::getAirPressureAtVehicle() {
+	return world.getAirDensityAtHeight(vehicle.getPosition().y);
+}
+
+double Simulation::getVehicleTemperature() {
+	return vehicle.getTemperature();
+}
+
+double Simulation::getTime() const {
+	return elapsed_time;
+}
+
+void Simulation::resetElapsedTime() {
+	elapsed_time = 0.;
+}
+
 void Simulation::resetVehicle() {
 	vehicle.resetVehicle();
+	resetElapsedTime();
 }
 
 void Simulation::setVehicleDirection(Vec2 newDir) {

@@ -5,7 +5,7 @@
 World::World(): 
 	gravity{ 9.81 },
 	base_air_density{1.225},
-	base_tempurature{ 288.0 } {
+	base_temperature{ 288.0 } {
 }
 
 double World::getGravity() const {
@@ -19,7 +19,17 @@ double World::getAirDensityAtHeight(int height) const {
 	return air_dense_at_height;
 }
 
-double World::getTempuratureAtHeight(int height) const {
-	// TODO return a dynamic tempurature
-	return base_tempurature;
+double World::getTemperatureAtHeight(int height) const {
+	// Simple troposphere-style lapse rate model
+	// Temperature drops about 0.0065 C per meter of altitude
+
+	double lapse_rate = 0.0065;
+	double temp = base_temperature - lapse_rate * height;
+
+	// Optional clamp so it does not go unrealistically low
+	if (temp < -56.5) {
+		temp = -56.5;
+	}
+
+	return temp;
 }

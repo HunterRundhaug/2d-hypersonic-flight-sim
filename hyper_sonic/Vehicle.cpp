@@ -6,9 +6,10 @@ Vehicle::Vehicle()
 	velocity{ 0.0, 0.0 },
 	direction{ 0.0, 1.0 },
 	mass(1000.0),
-	angular_velocity{0},
-	moment_of_inertia{5},
-	thrust(15000.0), 
+	angular_velocity{ 0 },
+	moment_of_inertia{ 5 },
+	thrust(15000.0),
+	temperature(288.),
 	fuel_left(0.0),
 	drag_coefficient(0.4),
 	pressure_limit(0.0),
@@ -29,6 +30,10 @@ Vec2 Vehicle::getVelocity() const {
 }
 Vec2 Vehicle::getDirection() const {
 	return direction;
+}
+
+double Vehicle::getTemperature() const {
+	return temperature;
 }
 
 double Vehicle::getMass() const {
@@ -58,6 +63,10 @@ double Vehicle::getMomentOfInertia() const {
 }
 
 // Setters
+void Vehicle::setTemperature(double newTemp) {
+	temperature = newTemp;
+}
+
 void Vehicle::setNewPosition(Vec2 new_position) {
 	position = new_position;
 }
