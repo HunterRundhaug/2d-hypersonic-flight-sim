@@ -13,12 +13,21 @@ float getRotationDegree(Vec2 vehicle_direction) {
     return angle_deg;
 }
 
+void SimulationApp::initText(sf::Text& text, std::string text_value, unsigned int size,
+    sf::Color color, sf::Text::Style style, sf::Vector2f position) 
+{
+    text.setString(text_value);
+    text.setCharacterSize(size);
+    text.setFillColor(color);
+    text.setStyle(style);
+    text.setPosition(position);
+}
+
 // Main Constructor
 SimulationApp::SimulationApp(): 
     vehicle_texture("Assets/rocket_icon.png"),
     vehicle_sprite(vehicle_texture),
     simulation(),
-    vehicle(simulation.getVehicle()),
     window(sf::VideoMode({ WIDTH, HEIGHT }), "SFML works!"),
     speed_value_text(font),
     speed_text_static(font),
@@ -26,24 +35,27 @@ SimulationApp::SimulationApp():
     veh_x_text_static(font),
     veh_y_pos_text(font),
     veh_y_text_static(font),
+    veh_ang_velo_text_static(font),
+    veh_ang_velo_text(font),
     physicsDt(simulation.getDeltaTime())
 
 {
     // Main constructor body
     vehicle_sprite.setScale({ 0.04f, 0.04f });
 
+    // set sprite rotation point to center
     bounds = vehicle_sprite.getLocalBounds();
     vehicle_sprite.setOrigin({
         bounds.position.x + bounds.size.x / 2.f,
         bounds.position.y + bounds.size.y / 2.f
         });
 
-    origin_x = WIDTH / 2; // vehicle origin
+    origin_x = WIDTH / 2; // vehicle sprite origin
     origin_y = HEIGHT - 100;
 
-    sprite_pos = worldToScreen(vehicle.getPosition(), pixels_pre_meter, origin_x, origin_y);
+    sprite_pos = worldToScreen(simulation.getVehiclePosition(), pixels_pre_meter, origin_x, origin_y);
     vehicle_sprite.setPosition(sprite_pos);
-    s_angle = getRotationDegree(vehicle.getDirection());
+    s_angle = getRotationDegree(simulation.getVehicleDirection());
     vehicle_sprite.setRotation(sf::degrees(s_angle));
 
     // TEXT 
@@ -53,54 +65,39 @@ SimulationApp::SimulationApp():
     }
 
     // SFML texts
+ 
     // speed text variable
-    
-    speed_value_text.setString("0");
-    speed_value_text.setCharacterSize(24);
-    speed_value_text.setFillColor(sf::Color::Green);
-    speed_value_text.setStyle(sf::Text::Regular);
-    speed_value_text.setPosition({ 100, (float)HEIGHT - 55.f });
+    initText(speed_value_text, "0", 24, sf::Color::Green,
+        sf::Text::Regular, { 100, (float)HEIGHT - 55.f });
 
     // static "speed" text
-    
-    speed_text_static.setString("speed :");
-    speed_text_static.setCharacterSize(15);
     sf::Color speed_s_color(120, 210, 255);
-    speed_text_static.setFillColor(speed_s_color);
-    speed_text_static.setStyle(sf::Text::Regular);
-    speed_text_static.setPosition({ 30, (float)HEIGHT - 50.f });
+    initText(speed_text_static, "speed :", 15, speed_s_color,
+        sf::Text::Regular, { 30, (float)HEIGHT - 50.f });
 
     // position x text variable
-    
-    veh_x_pos_text.setString("0");
-    veh_x_pos_text.setCharacterSize(24);
-    veh_x_pos_text.setFillColor(sf::Color::Green);
-    veh_x_pos_text.setStyle(sf::Text::Regular);
-    veh_x_pos_text.setPosition({ 100, (float)HEIGHT - 85.f });
+    initText(veh_x_pos_text, "0", 24, sf::Color::Green,
+        sf::Text::Regular, { 100, (float)HEIGHT - 85.f });
 
     // static "y" text
-    
-    veh_x_text_static.setString("x :");
-    veh_x_text_static.setCharacterSize(15);
-    veh_x_text_static.setFillColor(speed_s_color);
-    veh_x_text_static.setStyle(sf::Text::Regular);
-    veh_x_text_static.setPosition({ 30, (float)HEIGHT - 80.f });
+    initText(veh_x_text_static, "x :", 15, speed_s_color,
+        sf::Text::Regular, { 30, (float)HEIGHT - 80.f });
 
     // position y text variable
-    
-    veh_y_pos_text.setString("0");
-    veh_y_pos_text.setCharacterSize(24);
-    veh_y_pos_text.setFillColor(sf::Color::Green);
-    veh_y_pos_text.setStyle(sf::Text::Regular);
-    veh_y_pos_text.setPosition({ 100, (float)HEIGHT - 115.f });
+    initText(veh_y_pos_text, "0", 24, sf::Color::Green,
+        sf::Text::Regular, { 100, (float)HEIGHT - 115.f });
 
     // static "y" text
-   
-    veh_y_text_static.setString("y :");
-    veh_y_text_static.setCharacterSize(15);
-    veh_y_text_static.setFillColor(speed_s_color);
-    veh_y_text_static.setStyle(sf::Text::Regular);
-    veh_y_text_static.setPosition({ 30, (float)HEIGHT - 110.f });
+    initText(veh_y_text_static, "y/ALT :", 15, speed_s_color,
+        sf::Text::Regular, { 30, (float)HEIGHT - 110.f });
+
+    // static angular velo text
+    initText(veh_ang_velo_text_static, "ang_velo :", 15, speed_s_color,
+        sf::Text::Regular, { 30, (float)HEIGHT - 140.f });
+
+    // angular velo value text
+    initText(veh_ang_velo_text, "0", 24, sf::Color::Green,
+        sf::Text::Regular, { 110, (float)HEIGHT - 145.f });
     
 }
 
@@ -134,16 +131,17 @@ void SimulationApp::run() {
         }
 
         // Update vehicle Sprite Position
-        float s_angle = getRotationDegree(vehicle.getDirection());
+        float s_angle = getRotationDegree(simulation.getVehicleDirection());
         vehicle_sprite.setRotation(sf::degrees(s_angle));
-        sf::Vector2f sprite_pos = worldToScreen(vehicle.getPosition(), pixels_pre_meter, origin_x, origin_y);
+        sprite_pos = worldToScreen(simulation.getVehiclePosition(), pixels_pre_meter, origin_x, origin_y);
         vehicle_sprite.setPosition(sprite_pos);
 
         // Update text values
-        double speed = vehicle.getSpeed();
+        double speed = simulation.getVehicleSpeed();
         speed_value_text.setString(std::to_string(static_cast<int>(speed)));
-        veh_x_pos_text.setString(std::to_string(static_cast<int>(vehicle.getPosition().x)));
-        veh_y_pos_text.setString(std::to_string(static_cast<int>(vehicle.getPosition().y)));
+        veh_x_pos_text.setString(std::to_string(static_cast<int>(simulation.getVehiclePosition().x)));
+        veh_y_pos_text.setString(std::to_string(static_cast<int>(simulation.getVehiclePosition().y)));
+        veh_ang_velo_text.setString(std::to_string((simulation.getVehicleAngularVelocity())));
 
         // update trail vector
         trail.push_back(sf::Vertex{ sprite_pos, sf::Color::Cyan });
@@ -164,7 +162,7 @@ void SimulationApp::run() {
         }
 
         if (ImGui::Button("reset_vehicle")) {
-            vehicle.resetVehicle();
+            simulation.resetVehicle();
             accumulator = 0.0;
             clock.restart();
         }
@@ -184,20 +182,27 @@ void SimulationApp::run() {
         if (ImGui::SliderFloat("Initial Angle", &directionAngleDeg, -180.0f, 180.0f)) {
             float angleRad = directionAngleDeg * 3.14159265f / 180.0f;
             Vec2 newDir(std::sin(angleRad), std::cos(angleRad));
-            vehicle.setDirection(newDir);
+            simulation.setVehicleDirection(newDir);
         }
 
-        float v_mass = vehicle.getMass();
+        float v_mass = simulation.getVehicleMass();
         if (ImGui::InputFloat("Vehicle Mass", &v_mass)) {
-            vehicle.setVehicleMass(v_mass);
+            simulation.setVehicleMass(v_mass);
         }
-        float v_moment = vehicle.getMomentOfInertia();
+        float v_moment = simulation.getVehicleMomentOfInertia();
         if (ImGui::InputFloat("Vehicle Moment Of Inertia", &v_moment)) {
-            vehicle.setVehicleMomentOfInertia(v_moment);
+            simulation.setVehicleMomentOfInertia(v_moment);
         }
-        float v_thrust = vehicle.getThrust();
+        float v_thrust = simulation.getVehicleThrust();
         if (ImGui::InputFloat("Vehicle Thrust", &v_thrust)) {
-            vehicle.setVehicleThrust(v_thrust);
+            simulation.setVehicleThrust(v_thrust);
+        }
+
+        float v_alt = simulation.getVehiclePosition().y;
+        if (ImGui::InputFloat("Altitude", &v_alt)) {
+            simulation.setVehicleAltitude(v_alt);
+            sprite_pos = worldToScreen(simulation.getVehiclePosition(), pixels_pre_meter, origin_x, origin_y);
+            vehicle_sprite.setPosition(sprite_pos);
         }
 
         ImGui::End();
@@ -210,6 +215,8 @@ void SimulationApp::run() {
         window.draw(veh_x_text_static);
         window.draw(veh_y_pos_text);
         window.draw(veh_y_text_static);
+        window.draw(veh_ang_velo_text_static);
+        window.draw(veh_ang_velo_text);
         if (trail.size() >= 2) {
             window.draw(&trail[0], trail.size(), sf::PrimitiveType::LineStrip);
         }

@@ -35,8 +35,6 @@ private:
 
 	Simulation simulation;
 
-	Vehicle& vehicle;
-
 	sf::RenderWindow window;
 
 	sf::Clock deltaClock;
@@ -60,5 +58,10 @@ private:
 	sf::Text veh_x_text_static;
 	sf::Text veh_y_pos_text;
 	sf::Text veh_y_text_static;
+	sf::Text veh_ang_velo_text_static;
+	sf::Text veh_ang_velo_text;
+
+	void initText( sf::Text& text, std::string text_value, unsigned int size,
+		sf::Color color, sf::Text::Style style, sf::Vector2f position);
 
 };
