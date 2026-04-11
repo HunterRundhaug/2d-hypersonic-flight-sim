@@ -7,6 +7,7 @@ private:
 	double dt;
 	Vehicle vehicle;
 	World world;
+	double elapsed_time = 0;
 
 public:
 	Simulation();
@@ -28,10 +29,15 @@ public:
 	double getVehicleMomentOfInertia();
 	double getVehicleThrust();
 	double getVehicleAngularVelocity();
+	double getAirPressureAtVehicle();
+	double getVehicleTemperature();
+	double getTime() const;
 
+	void resetElapsedTime();
 	void resetVehicle();
 	void setVehicleDirection(Vec2 newDir);
 	void setVehicleMass(float new_mass);
 	void setVehicleMomentOfInertia(float v_moment);
 	void setVehicleThrust(float v_thrust);
+	void updateTemperature();
 };

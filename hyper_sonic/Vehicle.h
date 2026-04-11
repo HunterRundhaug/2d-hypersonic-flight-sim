@@ -26,6 +26,8 @@ private:
 	double pressure_limit;
 	double fuel_left;
 
+	double temperature;
+
 public:
 	Vehicle();
 
@@ -33,6 +35,7 @@ public:
 	Vec2 getVelocity() const;
 	Vec2 getDirection() const;
 
+	double getTemperature() const;
 	double getMass() const;
 	double getThrust() const;
 	double getFuelLeft() const;
@@ -44,6 +47,7 @@ public:
 	double getSpeed() const;
 
 	// setters
+	void setTemperature(double newTemp);
 	void setNewPosition(Vec2 new_position);
 	void setNewVelocity(Vec2 new_velocity);
 	void setAngularVelocity(double new_ang_velo);

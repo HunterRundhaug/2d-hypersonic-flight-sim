@@ -23,6 +23,54 @@ void SimulationApp::initText(sf::Text& text, std::string text_value, unsigned in
     text.setPosition(position);
 }
 
+void SimulationApp::startSimulation() {
+    if (record_csv) {
+        csv_writer = std::make_unique<CSVWriter>(csv_file_name);
+        csv_writer->writeHeader({
+            "time",
+            "x",
+            "y",
+            "speed",
+            "dir_x",
+            "dir_y",
+            "angular_velocity",
+            "temperature"
+            });
+    }
+
+    simulation_running = true;
+}
+
+void SimulationApp::updateSimulation() {
+    if (!simulation_running) {
+        return;
+    }
+
+    simulation.update();
+
+    if (record_csv && csv_writer) {
+        csv_writer->writeRow({
+            std::to_string(simulation.getTime()),
+            std::to_string(simulation.getVehicle().getPosition().x),
+            std::to_string(simulation.getVehicle().getPosition().y),
+            std::to_string(simulation.getVehicle().getSpeed()),
+            std::to_string(simulation.getVehicle().getDirection().x),
+            std::to_string(simulation.getVehicle().getDirection().y),
+            std::to_string(simulation.getVehicle().getAngularVelocity()),
+            std::to_string(simulation.getVehicle().getTemperature())
+            });
+    }
+}
+
+void SimulationApp::stopSimulation() {
+    simulation_running = false;
+
+    if (csv_writer) {
+        csv_writer->closeFile();
+        csv_writer.reset();
+    }
+}
+
 // Main Constructor
 SimulationApp::SimulationApp(): 
     vehicle_texture("Assets/rocket_icon.png"),
@@ -37,6 +85,10 @@ SimulationApp::SimulationApp():
     veh_y_text_static(font),
     veh_ang_velo_text_static(font),
     veh_ang_velo_text(font),
+    air_psr_at(font),
+    air_pst_static(font),
+    veh_temp(font),
+    veh_temp_static(font),
     physicsDt(simulation.getDeltaTime())
 
 {
@@ -98,6 +150,22 @@ SimulationApp::SimulationApp():
     // angular velo value text
     initText(veh_ang_velo_text, "0", 24, sf::Color::Green,
         sf::Text::Regular, { 110, (float)HEIGHT - 145.f });
+
+    // air pressure variable 
+    initText(air_psr_at, "0", 24, sf::Color::Green,
+        sf::Text::Regular, { 110, (float)HEIGHT - 175.f });
+
+    // air pressure static
+    initText(air_pst_static, "air kg/m^3 :", 15, speed_s_color,
+        sf::Text::Regular, { 30, (float)HEIGHT - 170.f });
+
+    // vehicle temperature varaible
+    initText(veh_temp, "0", 24, sf::Color::Green,
+        sf::Text::Regular, { 150, (float)HEIGHT - 205.f });
+
+    // vehicle temp static
+    initText(veh_temp_static, "vehicle temp kelvin :", 15, speed_s_color,
+        sf::Text::Regular, { 10, (float)HEIGHT - 200.f });
     
 }
 
@@ -126,7 +194,7 @@ void SimulationApp::run() {
 
         while (accumulator >= physicsDt) {
             // run a single simulation step
-            simulation.update();
+            updateSimulation();
             accumulator -= physicsDt;
         }
 
@@ -142,6 +210,8 @@ void SimulationApp::run() {
         veh_x_pos_text.setString(std::to_string(static_cast<int>(simulation.getVehiclePosition().x)));
         veh_y_pos_text.setString(std::to_string(static_cast<int>(simulation.getVehiclePosition().y)));
         veh_ang_velo_text.setString(std::to_string((simulation.getVehicleAngularVelocity())));
+        air_psr_at.setString(std::to_string(simulation.getAirPressureAtVehicle()));
+        veh_temp.setString(std::to_string(static_cast<int>(simulation.getVehicleTemperature())));
 
         // update trail vector
         trail.push_back(sf::Vertex{ sprite_pos, sf::Color::Cyan });
@@ -157,7 +227,15 @@ void SimulationApp::run() {
 
         if (ImGui::Button(paused ? "Start" : "Pause")) {
 
-            paused ? simSpeed = simSpeedInput : simSpeed = 0.0;
+            if (paused) {
+                simSpeed = simSpeedInput;
+                simulation_running = true;
+                startSimulation();
+            }
+            else {
+                simSpeed = 0.0;
+                stopSimulation();
+            }
             paused = !paused;
         }
 
@@ -207,6 +285,20 @@ void SimulationApp::run() {
 
         ImGui::End();
 
+        // CSV controller
+        ImGui::SetNextWindowSize(ImVec2(300, 200));
+        ImGui::Begin("File output");
+
+        static char file_name_buffer[128] = "output.csv";
+        ImGui::InputText("CSV File", file_name_buffer, sizeof(file_name_buffer));
+        csv_file_name = file_name_buffer;
+        if (csv_file_name.empty()) {
+            csv_file_name = "output.csv";
+        }
+        ImGui::Checkbox("Record CSV", &record_csv);
+
+        ImGui::End();
+
         window.clear();
         window.draw(vehicle_sprite);
         window.draw(speed_value_text);
@@ -217,6 +309,10 @@ void SimulationApp::run() {
         window.draw(veh_y_text_static);
         window.draw(veh_ang_velo_text_static);
         window.draw(veh_ang_velo_text);
+        window.draw(air_psr_at);
+        window.draw(air_pst_static);
+        window.draw(veh_temp);
+        window.draw(veh_temp_static);
         if (trail.size() >= 2) {
             window.draw(&trail[0], trail.size(), sf::PrimitiveType::LineStrip);
         }
