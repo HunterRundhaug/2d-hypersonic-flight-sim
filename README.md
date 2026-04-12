@@ -168,9 +168,9 @@ It also serves as a portfolio project that demonstrates work in numerical simula
 
 Add screenshots or GIFs here once you have the UI in a presentable state.
 
-```md
+
 ![Simulation Screenshot](hyper_sonic/Assets/example_screenshot.png)
-```
+
 
 ## Future Vision
 
