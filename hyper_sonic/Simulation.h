@@ -32,6 +32,8 @@ public:
 	double getAirPressureAtVehicle();
 	double getVehicleTemperature();
 	double getTime() const;
+	double getVehicleDragCoefficient() const;
+	double getVehicleReferenceArea() const;
 
 	void resetElapsedTime();
 	void resetVehicle();
@@ -40,4 +42,6 @@ public:
 	void setVehicleMomentOfInertia(float v_moment);
 	void setVehicleThrust(float v_thrust);
 	void updateTemperature();
+	void setVehicleDragCoefficient(double new_dc);
+	void setVehicleReferenceArea(double new_ra);
 };

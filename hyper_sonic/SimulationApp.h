@@ -68,6 +68,7 @@ private:
 	sf::Text air_pst_static;
 	sf::Text veh_temp;
 	sf::Text veh_temp_static;
+	sf::Text top_altitude_text;
 
 	// CSV writer vars
 	std::string csv_file_name = "output.csv";
@@ -78,4 +79,5 @@ private:
 	void initText( sf::Text& text, std::string text_value, unsigned int size,
 		sf::Color color, sf::Text::Style style, sf::Vector2f position);
 
+	float getTopAltitude();
 };

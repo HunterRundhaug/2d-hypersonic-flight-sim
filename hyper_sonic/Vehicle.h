@@ -56,6 +56,8 @@ public:
 	void setVehicleMass(double newMass);
 	void setVehicleMomentOfInertia(double moment);
 	void setVehicleThrust(double new_thrust);
+	void setDragCoefficient(double new_dc);
+	void setReferenceArea(double new_ra);
 
 	void resetVehicle();
 };

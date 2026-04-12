@@ -179,6 +179,14 @@ double Simulation::getTime() const {
 	return elapsed_time;
 }
 
+double Simulation::getVehicleDragCoefficient() const{
+	return vehicle.getDrag();
+}
+
+double Simulation::getVehicleReferenceArea() const {
+	return vehicle.getReferenceArea();
+}
+
 void Simulation::resetElapsedTime() {
 	elapsed_time = 0.;
 }
@@ -202,5 +210,13 @@ void Simulation::setVehicleMomentOfInertia(float v_moment) {
 
 void Simulation::setVehicleThrust(float v_thrust) {
 	vehicle.setVehicleThrust(v_thrust);
+}
+
+void Simulation::setVehicleDragCoefficient(double new_ra) {
+	vehicle.setDragCoefficient(new_ra);
+}
+
+void Simulation::setVehicleReferenceArea(double new_ra) {
+	vehicle.setReferenceArea(new_ra);
 }
 

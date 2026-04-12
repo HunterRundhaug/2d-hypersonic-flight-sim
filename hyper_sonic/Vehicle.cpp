@@ -95,6 +95,14 @@ void Vehicle::setVehicleThrust(double new_thrust) {
 	thrust = new_thrust;
 }
 
+void Vehicle::setDragCoefficient(double new_dc) {
+	drag_coefficient = new_dc;
+}
+
+void Vehicle::setReferenceArea(double new_ra) {
+	reference_area = new_ra;
+}
+
 
 void Vehicle::resetVehicle() {
 	position = origin_position;

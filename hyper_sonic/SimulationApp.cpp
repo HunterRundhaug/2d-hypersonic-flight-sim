@@ -71,6 +71,10 @@ void SimulationApp::stopSimulation() {
     }
 }
 
+float SimulationApp::getTopAltitude() {
+    return origin_y / pixels_pre_meter;
+}
+
 // Main Constructor
 SimulationApp::SimulationApp(): 
     vehicle_texture("Assets/rocket_icon.png"),
@@ -89,6 +93,7 @@ SimulationApp::SimulationApp():
     air_pst_static(font),
     veh_temp(font),
     veh_temp_static(font),
+    top_altitude_text(font),
     physicsDt(simulation.getDeltaTime())
 
 {
@@ -115,6 +120,9 @@ SimulationApp::SimulationApp():
     {
         std::cerr << "Failed to load font!\n";
     }
+
+    // set top alt var
+    float topAltitude = getTopAltitude();
 
     // SFML texts
  
@@ -166,12 +174,16 @@ SimulationApp::SimulationApp():
     // vehicle temp static
     initText(veh_temp_static, "vehicle temp kelvin :", 15, speed_s_color,
         sf::Text::Regular, { 10, (float)HEIGHT - 200.f });
+
+    // top altitude variable
+    initText(top_altitude_text,
+        "<--Top Alt : " + std::to_string(static_cast<int>(topAltitude)),
+        unsigned int(18), sf::Color::Green,
+        sf::Text::Regular, { WIDTH - 230.f, 25.f });
     
 }
 
 void SimulationApp::run() {
-    
-    int write_csv_flag = 0;
 
     // ImGUI
     if (!ImGui::SFML::Init(window)) {
@@ -249,7 +261,9 @@ void SimulationApp::run() {
             trail.clear();
         }
 
-        ImGui::InputFloat("Simulation Scale", &pixels_pre_meter);
+        if (ImGui::InputFloat("Simulation Scale", &pixels_pre_meter)) {
+            top_altitude_text.setString("<--Top Alt : " + std::to_string(static_cast<int>(getTopAltitude())));
+        }
 
         ImGui::End();
 
@@ -283,6 +297,16 @@ void SimulationApp::run() {
             vehicle_sprite.setPosition(sprite_pos);
         }
 
+        float v_drag = simulation.getVehicleDragCoefficient();
+        if (ImGui::InputFloat("Drag Coefficient", &v_drag)) {
+            simulation.setVehicleDragCoefficient(v_drag);
+        }
+
+        float v_ref_area = simulation.getVehicleReferenceArea();
+        if (ImGui::InputFloat("Drag Reference Area", &v_ref_area)) {
+            simulation.setVehicleReferenceArea(v_ref_area);
+        }
+
         ImGui::End();
 
         // CSV controller
@@ -295,7 +319,7 @@ void SimulationApp::run() {
         if (csv_file_name.empty()) {
             csv_file_name = "output.csv";
         }
-        ImGui::Checkbox("Record CSV", &record_csv);
+        ImGui::Checkbox("Record flight data to CSV", &record_csv);
 
         ImGui::End();
 
@@ -313,6 +337,7 @@ void SimulationApp::run() {
         window.draw(air_pst_static);
         window.draw(veh_temp);
         window.draw(veh_temp_static);
+        window.draw(top_altitude_text);
         if (trail.size() >= 2) {
             window.draw(&trail[0], trail.size(), sf::PrimitiveType::LineStrip);
         }
