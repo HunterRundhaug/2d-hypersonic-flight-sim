@@ -1,4 +1,4 @@
-#include "CSVWriter.h"
+#include "../include/CSVWriter.h"
 
 
 CSVWriter::CSVWriter(std::string file_name) :file_name{ file_name }{

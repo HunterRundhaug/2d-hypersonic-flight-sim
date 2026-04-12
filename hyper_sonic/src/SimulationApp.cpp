@@ -1,4 +1,4 @@
-#include "SimulationApp.h"
+#include "../include/SimulationApp.h"
 
 
 sf::Vector2f worldToScreen(const Vec2& worldPos, float pixelsPerMeter, float originX, float originY) {

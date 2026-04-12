@@ -1,13 +1,12 @@
 #include <iostream>
 
-#include "SimulationApp.h"
-
-#include "Simulation.h"
+#include "../include/SimulationApp.h"
+#include "../include/Simulation.h"
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <imgui.h>
 #include <imgui-SFML.h>
-#include "Vec2.h"
+#include "../include/Vec2.h"
 
 
 int main()

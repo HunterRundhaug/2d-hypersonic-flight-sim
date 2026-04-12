@@ -1,7 +1,7 @@
-#include "Simulation.h"
-#include "Vec2.h"
+#include "../include/Simulation.h"
+#include "../include/Vec2.h"
 #include <iostream>
-#include "CSVWriter.h"
+#include "../include/CSVWriter.h"
 #include <cmath>
 
 Simulation::Simulation(): 

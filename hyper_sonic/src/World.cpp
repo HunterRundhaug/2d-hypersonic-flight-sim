@@ -1,4 +1,4 @@
-#include "World.h"
+#include "../include/World.h"
 #include <cmath>
 
 // default values probably should be changed 

@@ -147,29 +147,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CSVWriter.cpp" />
-    <ClCompile Include="driver.cpp" />
-    <ClCompile Include="imgui-SFML.cpp" />
-    <ClCompile Include="imgui.cpp" />
-    <ClCompile Include="imgui_draw.cpp" />
-    <ClCompile Include="imgui_tables.cpp" />
-    <ClCompile Include="imgui_widgets.cpp" />
-    <ClCompile Include="Simulation.cpp" />
-    <ClCompile Include="SimulationApp.cpp" />
-    <ClCompile Include="Vec2.cpp" />
-    <ClCompile Include="Vehicle.cpp" />
-    <ClCompile Include="World.cpp" />
+    <ClCompile Include="src\CSVWriter.cpp" />
+    <ClCompile Include="src\driver.cpp" />
+    <ClCompile Include="third_party\imgui-sfml-master\imgui-SFML.cpp" />
+    <ClCompile Include="third_party\imgui-1.91.6\imgui.cpp" />
+    <ClCompile Include="third_party\imgui-1.91.6\imgui_draw.cpp" />
+    <ClCompile Include="third_party\imgui-1.91.6\imgui_tables.cpp" />
+    <ClCompile Include="third_party\imgui-1.91.6\imgui_widgets.cpp" />
+    <ClCompile Include="src\Simulation.cpp" />
+    <ClCompile Include="src\SimulationApp.cpp" />
+    <ClCompile Include="src\Vec2.cpp" />
+    <ClCompile Include="src\Vehicle.cpp" />
+    <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Idea.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CSVWriter.h" />
-    <ClInclude Include="Simulation.h" />
-    <ClInclude Include="SimulationApp.h" />
-    <ClInclude Include="Vec2.h" />
-    <ClInclude Include="Vehicle.h" />
-    <ClInclude Include="World.h" />
+    <ClInclude Include="include\CSVWriter.h" />
+    <ClInclude Include="include\Simulation.h" />
+    <ClInclude Include="include\SimulationApp.h" />
+    <ClInclude Include="include\Vec2.h" />
+    <ClInclude Include="include\Vehicle.h" />
+    <ClInclude Include="include\World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
