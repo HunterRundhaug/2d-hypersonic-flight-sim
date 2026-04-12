@@ -73,16 +73,17 @@ void Simulation::updateTemperature() {
 	double speed = vehicle.getSpeed();
 	double rho = world.getAirDensityAtHeight(height);
 
-	// Simple drag heating estimate
-	double heating = 0.0;
+	double heating_rise = 0.0;
 	if (speed > 1e-6) {
-		heating = 0.00005 * rho * speed * speed * speed;
+		heating_rise = 5e-9 * rho * speed * speed * speed;
 	}
 
-	// Target temperature = ambient + aerodynamic heating
-	double target_temp = ambient_temp + heating;
+	if (heating_rise > 2000.0) {
+		heating_rise = 2000.0;
+	}
 
-	// Smoothly move vehicle temp toward target temp
+	double target_temp = ambient_temp + heating_rise;
+
 	double response_rate = 0.5;
 	double new_temp = vehicle.getTemperature()
 		+ (target_temp - vehicle.getTemperature()) * response_rate * dt;
