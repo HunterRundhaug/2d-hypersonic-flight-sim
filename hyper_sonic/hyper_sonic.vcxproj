@@ -161,9 +161,6 @@
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Idea.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="include\CSVWriter.h" />
     <ClInclude Include="include\Simulation.h" />
     <ClInclude Include="include\SimulationApp.h" />
