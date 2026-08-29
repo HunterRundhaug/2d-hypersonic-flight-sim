@@ -166,7 +166,7 @@ It also serves as a portfolio project that demonstrates work in numerical simula
 
 ## Screenshots
 
-![Simulation Screenshot](hyper_sonic/Assets/hyperflightsim-2.0.png)
+![Simulation Screenshot](hyper_sonic/Assets/hyperflightsim-0.2.png)
 
 
 ## Future Vision
