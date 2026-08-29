@@ -56,18 +56,6 @@ private:
 	sf::Font font;
 	
 	// SFML texts
-	sf::Text speed_value_text;
-	sf::Text speed_text_static;
-	sf::Text veh_x_pos_text;
-	sf::Text veh_x_text_static;
-	sf::Text veh_y_pos_text;
-	sf::Text veh_y_text_static;
-	sf::Text veh_ang_velo_text_static;
-	sf::Text veh_ang_velo_text;
-	sf::Text air_psr_at;
-	sf::Text air_pst_static;
-	sf::Text veh_temp;
-	sf::Text veh_temp_static;
 	sf::Text top_altitude_text;
 
 	// CSV writer vars

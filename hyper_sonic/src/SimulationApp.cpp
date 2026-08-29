@@ -81,18 +81,7 @@ SimulationApp::SimulationApp():
     vehicle_sprite(vehicle_texture),
     simulation(),
     window(sf::VideoMode({ WIDTH, HEIGHT }), "SFML works!"),
-    speed_value_text(font),
-    speed_text_static(font),
-    veh_x_pos_text(font),
-    veh_x_text_static(font),
-    veh_y_pos_text(font),
-    veh_y_text_static(font),
-    veh_ang_velo_text_static(font),
-    veh_ang_velo_text(font),
-    air_psr_at(font),
-    air_pst_static(font),
-    veh_temp(font),
-    veh_temp_static(font),
+    font(),
     top_altitude_text(font),
     physicsDt(simulation.getDeltaTime())
 
@@ -123,57 +112,6 @@ SimulationApp::SimulationApp():
 
     // set top alt var
     float topAltitude = getTopAltitude();
-
-    // SFML texts
- 
-    // speed text variable
-    initText(speed_value_text, "0", 24, sf::Color::Green,
-        sf::Text::Regular, { 100, (float)HEIGHT - 55.f });
-
-    // static "speed" text
-    sf::Color speed_s_color(120, 210, 255);
-    initText(speed_text_static, "speed :", 15, speed_s_color,
-        sf::Text::Regular, { 30, (float)HEIGHT - 50.f });
-
-    // position x text variable
-    initText(veh_x_pos_text, "0", 24, sf::Color::Green,
-        sf::Text::Regular, { 100, (float)HEIGHT - 85.f });
-
-    // static "y" text
-    initText(veh_x_text_static, "x :", 15, speed_s_color,
-        sf::Text::Regular, { 30, (float)HEIGHT - 80.f });
-
-    // position y text variable
-    initText(veh_y_pos_text, "0", 24, sf::Color::Green,
-        sf::Text::Regular, { 100, (float)HEIGHT - 115.f });
-
-    // static "y" text
-    initText(veh_y_text_static, "y/ALT :", 15, speed_s_color,
-        sf::Text::Regular, { 30, (float)HEIGHT - 110.f });
-
-    // static angular velo text
-    initText(veh_ang_velo_text_static, "ang_velo :", 15, speed_s_color,
-        sf::Text::Regular, { 30, (float)HEIGHT - 140.f });
-
-    // angular velo value text
-    initText(veh_ang_velo_text, "0", 24, sf::Color::Green,
-        sf::Text::Regular, { 110, (float)HEIGHT - 145.f });
-
-    // air pressure variable 
-    initText(air_psr_at, "0", 24, sf::Color::Green,
-        sf::Text::Regular, { 110, (float)HEIGHT - 175.f });
-
-    // air pressure static
-    initText(air_pst_static, "air kg/m^3 :", 15, speed_s_color,
-        sf::Text::Regular, { 30, (float)HEIGHT - 170.f });
-
-    // vehicle temperature varaible
-    initText(veh_temp, "0", 24, sf::Color::Green,
-        sf::Text::Regular, { 150, (float)HEIGHT - 205.f });
-
-    // vehicle temp static
-    initText(veh_temp_static, "vehicle temp kelvin :", 15, speed_s_color,
-        sf::Text::Regular, { 10, (float)HEIGHT - 200.f });
 
     // top altitude variable
     initText(top_altitude_text,
@@ -218,12 +156,6 @@ void SimulationApp::run() {
 
         // Update text values
         double speed = simulation.getVehicleSpeed();
-        speed_value_text.setString(std::to_string(static_cast<int>(speed)));
-        veh_x_pos_text.setString(std::to_string(static_cast<int>(simulation.getVehiclePosition().x)));
-        veh_y_pos_text.setString(std::to_string(static_cast<int>(simulation.getVehiclePosition().y)));
-        veh_ang_velo_text.setString(std::to_string((simulation.getVehicleAngularVelocity())));
-        air_psr_at.setString(std::to_string(simulation.getAirPressureAtVehicle()));
-        veh_temp.setString(std::to_string(static_cast<int>(simulation.getVehicleTemperature())));
 
         // update trail vector
         trail.push_back(sf::Vertex{ sprite_pos, sf::Color::Cyan });
@@ -323,21 +255,23 @@ void SimulationApp::run() {
 
         ImGui::End();
 
+        ImGui::SetNextWindowSize(ImVec2(300, 300));
+        ImGui::Begin("Vehicle Details");
+        ImGui::Text("Vehicle Temp: %0.f (k)", simulation.getVehicleTemperature());
+        ImGui::Text("Thrust: %.0f (N)", simulation.getVehicleThrust());
+        ImGui::Text("Air Density: %.3f (kg.m^3)", simulation.getAirPressureAtVehicle());
+        ImGui::Text("Angular Velocity: %.0f (rad/sec)", simulation.getVehicleAngularVelocity());
+        ImGui::Text("Altitude %.0f (m)", simulation.getVehiclePosition().y);
+        ImGui::Text("x Position: %.0f (m)", simulation.getVehiclePosition().x);
+        ImGui::Text("Speed: %.3f (m/s)", simulation.getVehicleSpeed());
+
+
+
+
+        ImGui::End();
+
         window.clear();
         window.draw(vehicle_sprite);
-        window.draw(speed_value_text);
-        window.draw(speed_text_static);
-        window.draw(veh_x_pos_text);
-        window.draw(veh_x_text_static);
-        window.draw(veh_y_pos_text);
-        window.draw(veh_y_text_static);
-        window.draw(veh_ang_velo_text_static);
-        window.draw(veh_ang_velo_text);
-        window.draw(air_psr_at);
-        window.draw(air_pst_static);
-        window.draw(veh_temp);
-        window.draw(veh_temp_static);
-        window.draw(top_altitude_text);
         if (trail.size() >= 2) {
             window.draw(&trail[0], trail.size(), sf::PrimitiveType::LineStrip);
         }

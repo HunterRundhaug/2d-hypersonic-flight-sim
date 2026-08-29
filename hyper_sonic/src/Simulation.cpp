@@ -4,6 +4,19 @@
 #include "../include/CSVWriter.h"
 #include <cmath>
 
+// Physics units: SI (International System of Units)
+// Position       -> meters (m)
+// Velocity       -> meters/second (m/s)
+// Acceleration   -> meters/second^2 (m/s^2)
+// Mass           -> kilograms (kg)
+// Force          -> newtons (N)
+// Time           -> seconds (s)
+// Air density    -> kilograms/m^3 (kg/m^3)
+// Area           -> square meters (m^2)
+// Angular velocity -> radians/second (rad/s)
+// Torque         -> newton-meters (N*m)
+// Moment of inertia -> kg*m^2
+
 Simulation::Simulation(): 
 	dt{0.01},
 	vehicle{},
