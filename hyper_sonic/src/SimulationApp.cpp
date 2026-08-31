@@ -80,7 +80,7 @@ SimulationApp::SimulationApp():
     vehicle_texture("Assets/rocket_icon.png"),
     vehicle_sprite(vehicle_texture),
     simulation(),
-    window(sf::VideoMode({ WIDTH, HEIGHT }), "SFML works!"),
+    window(sf::VideoMode({ WIDTH, HEIGHT }), "Hyper Sonic Flight Simulator"),
     font(),
     top_altitude_text(font),
     physicsDt(simulation.getDeltaTime())
